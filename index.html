@@ -24,7 +24,7 @@
             background-color: #ffffff;
             width: 700px;
             max-width: 90vw;
-            padding: 40px;
+            padding: 20px;
             line-height: 1.8;
             font-size: 1.5em;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
@@ -85,34 +85,57 @@
         .popup {
             display: none;
             position: absolute;
-            background: url('ink.png') no-repeat center center;
-            background-size: 100% 100%;
-            padding: 100px;
+            padding: 10px 10px;
             color: #ffffff;
-            font-size: 1.5em;
+            font-size: 1.3em;
             font-family: Georgia, serif;
             z-index: 100;
             box-sizing: border-box;
 
             opacity: 0;
             pointer-events: none;
-            text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.8);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
             word-break: break-word;
 
-            max-width: 90vw;
-            min-width: 240px;
+
+            /* popup width */
+            max-width: 30vw; 
+            min-width: 100px;
             display: inline-block;
             white-space: normal;
             overflow-wrap: break-word;
+            transition: opacity 0.4s ease;
+            width: fit-content;
         }
 
         .popup p {
-            max-width: 60%;
-            margin: 0 auto;
+            /* max-width: 60%; */
+            margin: 0;
             line-height: 1.5;
             text-align: center;
             overflow: hidden;
             text-overflow: ellipsis;
+        }
+
+        .popup.kevin {
+            background-color: #2b7de9;
+        }
+
+        .popup.boss {
+            background-color: #115a23;
+        }
+
+        .popup.father {
+            background-color: #b5651d;
+        }
+
+        .popup.wife {
+            background-color: #c94c4c;
+        }
+
+        .popup.girlfriend {
+            background-color: #7a52c4;
         }
 
 
@@ -165,13 +188,12 @@
                 padding: 16vw 8vw;
                 font-size: 1em;
                 max-width: 92vw;
-                background-size: 100% 100%;
+                background-size: cover;
             }
 
             h1 {
                 font-size: 1.6em;
             }
-        }
         }
     </style>
 </head>
@@ -538,40 +560,32 @@
 
                 const summaryId = el.dataset.summaryId;
                 const characterType = el.dataset.character;
-                const summaryText = characterSummaries[summaryId] || "Summar    y not available.";
+                const summaryText = characterSummaries[summaryId] || "Summary not available.";
+
+                popup.className = `popup ${characterType} fade-in`;
+                popup.innerHTML = `<p>${summaryText}</p>`;
+                popup.style.display = 'inline-block';
 
                 const rect = el.getBoundingClientRect();
-                const popupWidth = 500;
+                const popupWidth = popup.offsetWidth;
                 const margin = 16;
 
-
                 let left = rect.left + window.scrollX;
+                let top = rect.bottom + window.scrollY + 8;
 
-
+                // Adjust if popup would overflow to the right
                 if (left + popupWidth + margin > window.innerWidth) {
                     left = window.innerWidth - popupWidth - margin;
                 }
 
+                // Minimum left edge protection
+                if (left < margin) {
+                    left = margin;
+                }
 
-                popup.className = `popup ${characterType} fade-in`;
-                popup.innerHTML = `<p>${summaryText}</p>`;
-                popup.style.top = `${rect.bottom + window.scrollY}px`;
-                popup.style.left = `${Math.max(margin, left)}px`;
-                popup.style.display = 'flex';
-
+                popup.style.left = `${left}px`;
+                popup.style.top = `${top}px`;
             });
-        });
-
-        document.addEventListener('click', () => {
-            if (popup.style.display === 'flex') {
-                popup.classList.remove('fade-in');
-                popup.classList.add('fade-out');
-                setTimeout(() => {
-                    popup.style.display = 'none';
-                    popup.classList.remove('fade-out');
-                    popup.innerText = '';
-                }, 300);
-            }
         });
     </script>
 
