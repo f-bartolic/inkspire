@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Crane</title>
+    <style>
+        body {
+            background-color: #fdfaf6;
+            margin: 0;
+            padding: 0;
+        }
+
+        main {
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .book {
+            background-color: #ffffff;
+            max-width: 700px;
+            padding: 40px;
+            line-height: 1.8;
+            font-family: Georgia, serif;
+            font-size: 18px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            font-family: 'Georgia', serif;
+            margin-bottom: 40px;
+        }
+
+        section {
+            margin-bottom: 80px;
+            position: relative;
+        }
+
+        section::after {
+            content: "";
+            display: block;
+            width: 50%;
+            margin: 60px auto 0;
+            border-top: 1px solid #ccc;
+        }
+
+        .character {
+            cursor: pointer;
+            text-decoration: underline;
+            position: relative;
+        }
+
+        .character.kevin {
+            color: #2b7de9;
+        }
+
+        .character.boss {
+            color: #115a23;
+        }
+
+        .character.father {
+            color: #b5651d;
+        }
+
+        .character.wife {
+            color: #c94c4c;
+        }
+
+        .character.girlfriend {
+            color: #7a52c4;
+        }
+
+        .popup {
+            display: none;
+            position: absolute;
+            background: url('/home/fbartolic/Documents/fun/tale-hackathon/app/assets/ink.png') no-repeat center center;
+            background-size: contain;
+            width: 500px;
+            height: 280px;
+            padding: 20px;
+            color: #ffffff;
+            font-size: 14px;
+            font-family: Georgia, serif;
+            text-align: center;
+            z-index: 100;
+            border: none;
+            box-shadow: none;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            opacity: 0;
+            pointer-events: none;
+            line-height: 1.4;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+            white-space: normal;
+            word-break: break-word;
+            text-align: center;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+
+
+        .popup p {
+            max-width: 60%;
+            margin: 0;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease forwards;
+            pointer-events: auto;
+        }
+
+        .fade-out {
+            animation: fadeOut 0.3s ease forwards;
+            pointer-events: none;
+        }
+
+
+        /* .popup.kevin {}
+
+        .popup.boss {
+            border-color: #0d5319;
+            background-color: #1ecc66;
+        }
+
+        .popup.father {
+            border-color: #b5651d;
+            background-color: #fdf4ea;
+        }
+
+        .popup.wife {
+            border-color: #9b3b8e;
+            background-color: #fff1f1;
+        }
+
+        .popup.girlfriend {
+            border-color: #7a52c4;
+            background-color: #f3efff;
+        } */
+
+        footer {
+            text-align: center;
+            font-style: italic;
+            color: #555;
+            margin-top: 80px;
+            padding-bottom: 40px;
+        }
+    </style>
+</head>
+
+<script>
+    const characterSummaries = {
+        "Kevin-1": "Kevin is a focused, confident crane operator who finds peace and purpose high above the city. He thrives in solitude and takes pride in being the best at what he does.",
+        "Boss-1": "Kevin's boss is a serious, practical site manager who values Kevin's skills but rarely shows emotion. Though unsettled by delivering legal papers, he briefly reveals empathy beneath his formality.",
+        "Father-1": "Kevin once saw his father as an artistic 'iron weaver,' but later realized he was a routine laborer. This mirrors Kevin's own crisis—he followed the same path and now sees the emotional and creative cost.",
+        "Wife-1": "Kevin's wife is mentioned only in a legal envelope that visibly unsettles him. Her name appears in official documents, hinting at serious personal developments but leaving the details unclear.",
+
+        "Wife-2": "Kevin's estranged wife has left with their child. Though not present, her absence reveals the emotional distance in their marriage and her choice to pursue a different life.",
+
+
+        "Girlfriend-2": "Kevin's first love is now a confident, articulate visual artist. She reconnects with him warmly, but her success and emotional openness stir jealousy and unresolved feelings in Kevin.",
+        "Boss-2": "Kevin's boss remains reserved but concerned. He checks in on Kevin's well-being, but accepts Kevin's deflections without prying, continuing to play the part of the professional supervisor.",
+        "Father-2": "Kevin's father reappears in memory as a symbol of a life lived by the blueprint—stable, practical, but without creative freedom. Kevin sees his father's path as one he mirrored, until now.",
+        "Kevin-2": "Kevin is quietly unraveling. He finds comfort in structure but struggles with emotional isolation after his wife leaves. A reunion with his first girlfriend reopens old wounds, stirring feelings of nostalgia, regret, and quiet frustration.",
+
+
+
+        "Girlfriend-3": "Though absent, Kevin's childhood crush becomes a mental catalyst. Her confidence and artistic life provoke envy and reflection, pushing Kevin toward a personal and creative awakening.",
+        "Kevin-3": "Kevin begins confronting the emotional cost of his life path. Disillusioned by his past and worried about becoming like his father, he unexpectedly finds purpose again when trusted with a new crane model—order and mastery still offer him a form of peace.",
+        "Boss-3": "Kevin's boss sees his decline but responds with faith, not punishment. By offering Kevin the chance to try a new crane, he shows belief in motivation through trust and responsibility.",
+
+        "Kevin-4": "Kevin completes his emotional and creative transformation. After a fevered vision of crane ballet, he reshapes the city in a rebellious act of beauty and control. It's the first time he truly feels seen—for what he is and what he could have been.",
+        "Boss-4": "Still bound by rules and order, Kevin's boss responds with a mix of discipline and allowance. His role reflects the structure Kevin has now outgrown, both professionally and personally."
+
+
+
+    };
+</script>
+
+
+
+<body>
+    <h1>Crane</h1>
+    <article>
+
+
+
+
+        <section>
+            <p>Below it is misty but <span class="character kevin" data-summary-id="Kevin-1"
+                    data-character="kevin">Kevin</span> peeks out above the
+                cloud. His clean shaven chin gleams in the morning sun. He takes a deep breath, it is still so quiet,
+                and he is about to break the silence.</p>
+            <p>He wraps his hands around the controls, presses the pedals with his feet, hears the familiar rattle of
+                the winches. A facade element for a future office complex rises up; he allows the jib to come around in
+                the direction of the scaffold where laborers are already waiting to receive his little package. They
+                wave to him, grinning.</p>
+            <p><span class="character kevin" data-summary-id="Kevin-1" data-character="kevin">Kevin</span> is the best,
+                he
+                knows it, and his <span class="character boss" data-summary-id="Boss-1"
+                    data-character="boss">boss</span> says so too. He is precise, patient, quick. He is the first
+                on every new tower crane that stretches a little higher and further, can lift more, the first to climb
+                it, to steer it, to break it in. Other crane operators look up to him, literally and figuratively, and
+                he feels good up there. He is fearless when it comes to heights, has impressive stamina. Can go for
+                hours without a bathroom break. His head is empty, he loves that. His element is air and he is in his
+                element.</p>
+            <p>Around eleven he gets his Thermos and lunch pail from his briefcase. There are colleagues that come down
+                for lunch but he prefers eating up there. There are those that bring binoculars with them so that they
+                can study the ants at ground level more closely, primarily the scantily clad on the balconies and in the
+                backyards, he gets enough from the city itself, the outlines of the buildings, the layout of the
+                streets. The forms, the patterns, the colors. He drinks coffee and eats peanut butter sandwiches and
+                enjoys the overview.</p>
+            <p>In his headset he hears his <span class="character boss" data-summary-id="Boss-1"
+                    data-character="boss">boss</span> clear his throat. '<span class="character kevin"
+                    data-summary-id="Kevin-1" data-character="kevin">Kevin</span>,' he says, 'can you come down?'</p>
+            <p><span class="character kevin" data-summary-id="Kevin-1" data-character="kevin">Kevin</span> wonders what
+                this
+                is about. His <span class="character boss" data-summary-id="Boss-1" data-character="boss">boss</span> is
+                a stickler for time, an announcement during dinner can only
+                mean a couple of things. He takes off his headset, puts his helmet on, gets into the little lift,
+                glides
+                down the yellow mast with the last corner of sandwich in his hand. A new crane pops into his head, a
+                new
+                model must have been announced, and his <span class="character boss" data-summary-id="Boss-1"
+                    data-character="boss">boss</span> wants to arrange a test drive for him. It must be
+                something
+                like that.</p>
+            <p>When he walks into the site office he knows immediately that he had it all wrong. His <span
+                    class="character boss" data-summary-id="Boss-1" data-character="boss">boss</span> is clutching a
+                thick envelope in both hands and eyeing it with suspicion. 'From a lawyer's office,' he says. 'Certified
+                mail.'</p>
+            <p>
+                <span class="character kevin" data-summary-id="Kevin-1" data-character="kevin">Kevin</span> shrugs.
+            </p>
+            <p>'It's for you,' says his <span class="character boss" data-summary-id="Boss-1"
+                    data-character="boss">boss</span>.</p>
+            <p><span class="character kevin" data-summary-id="Kevin-1" data-character="kevin">Kevin</span> takes the
+                envelope,
+                rips it
+                open, lets a pile of documents slide out. The logo of the law firm on
+                the front page. His surname in the subject heading. A couple of measured paragraphs. The name of his
+                <span class="character wife" data-summary-id="Wife-1" data-character="wife">wife</span>. The text seems
+                to
+                swim, <span class="character kevin" data-summary-id="Kevin-1" data-character="kevin">Kevin</span> grabs
+                the
+                coffee
+                machine for
+                support, breathes through his nose.
+            </p>
+            <p>'Do you want me to read it for you?' his <span class="character boss" data-summary-id="Boss-1"
+                    data-character="boss">boss</span> asks.</p>
+        </section>
+
+        <section>
+            <p>The house is empty when he gets home. His <span class="character wife" data-summary-id="Wife-2"
+                    data-character="wife">wife</span> has taken her things, she is staying with a friend. Their
+                little boy is over there too, of course. <span class="character kevin" data-summary-id="Kevin-2"
+                    data-character="kevin">Kevin</span> orders Chinese and watches soccer, it is not much
+                different to a normal weekday evening. But as he chases sleep he keeps seeing the little lift going
+                down, himself walking into the site office. And he tries to steer his thoughts, to make his <span
+                    class="character boss" data-summary-id="Boss-2" data-character="boss">boss</span> start
+                speaking about a test drive, but every time he gets the divorce papers pressed into his hand after all.
+            </p>
+            <p>Even so: once he is asleep he dreams of a sort of super tower crane. <span class="character kevin"
+                    data-summary-id="Kevin-2" data-character="kevin">Kevin</span> sits high above the city,
+                sorting it. He puts all the churches together. The parks next to the parks. He raises the crane even
+                higher and sorts entire cities. Higher still and he sorts countries. The world is divided up into
+                clearly defined elements in bright colors. It feels good once everything is in its place.</p>
+            <p>The days pass. <span class="character kevin" data-summary-id="Kevin-2"
+                    data-character="kevin">Kevin</span> takes the lift up the mast and he is happy up there, he takes
+                the lift down and he
+                is unhappy. The happiness is just big enough to make the unhappiness bearable. When his <span
+                    class="character boss" data-summary-id="Boss-2" data-character="boss">boss</span> asks him
+                how it's going, he makes light of the situation. 'Me and my old lady never did get along so well,' he
+                says.</p>
+            <p><span class="character kevin" data-summary-id="Kevin-2" data-character="kevin">Kevin</span> had loved her
+                but in his own way, he had thought that she understood him. He had difficulty with
+                the things that spouses do: sitting together on the sofa, or in the sun, days out, chatting, watching
+                TV. He would have preferred just to look at her.</p>
+            <p>On the weekends his son comes over. They don't talk but they are together. He values those moments. But
+                his discomfort only passes on Monday morning, when he takes his place in the cabin, takes off his
+                helmet, headset on, and wraps his hands around the controls. He looks at the horizon. Sorts girders,
+                cylinders, cubes, sometimes a pyramid. He is only truly at home when other people are at a distance.</p>
+            <p><span class="character kevin" data-summary-id="Kevin-2" data-character="kevin">Kevin</span> is not sure
+                why he accepted the invitation. The reunion of his grade school class in someone's
+                sprawling home. He drinks a couple of beers; that makes everything easier. The vaguely familiar faces
+                evoke feelings of familiarity and anonymity. For the first time he shares the entire story, about the
+                family that he had but lost. People react sympathetically, <span class="character kevin"
+                    data-summary-id="Kevin-2" data-character="kevin">Kevin</span> feels seen.</p>
+            <p>He is about to leave when she comes in. He has to look closely but it's her. His first <span
+                    class="character girlfriend" data-summary-id="Girlfriend-2"
+                    data-character="girlfriend">girlfriend</span>, who
+                kissed him at school summer camp in sixth grade, on the edge of her bunk. She went on to high school, he
+                went to vocational school, they never saw each other again. She recognizes him immediately, walks over
+                and starts a conversation. She makes no effort to simplify her language, which highly educated people
+                tend to do, and tells him about how she went self-employed as a visual artist, how she paints, how she
+                studied art history but how in the end it was all too theoretical for her, how she has since finished
+                art school, is preparing an exhibition she is nervous about.</p>
+            <p>He already has a marriage behind him, she is still just a girl - <span class="character kevin"
+                    data-summary-id="Kevin-2" data-character="kevin">Kevin</span> feels a bitter jealousy that he
+                can't put into words. 'Your eyes are still exactly the same,' she says, and he notices that he's getting
+                angry. He says that he needs to go to the bathroom, grabs his jacket, disappears.</p>
+        </section>
+
+        <section>
+            <p>Later that week, when he's waiting for the next load and a seagull lands on the jib not far above him, he
+                notices the composition, the seagull on a third of the triangle that forms the jib, stretching towards
+                the horizon. He can't help but be reminded of his father. The iron weaver.</p>
+            <p><span class="character kevin" data-summary-id="Kevin-3" data-character="kevin">Kevin</span>'s head is
+                usually empty when he works, he feels the slight sway of the crane in the wind and thinks
+                of nothing, not even the past. But now he remembers what he thought an iron weaver was when he was a
+                little boy. In his imagination he had seen his father bending iron bars, making them into the shapes of
+                animals, people, abstract figures. He wove everything he could conceive of as if it was nothing. When
+                his father watched soccer, <span class="character kevin" data-summary-id="Kevin-3"
+                    data-character="kevin">Kevin</span> saw an artist recovering from his creation. Until one day his
+                father
+                took him along to the construction site and he discovered what he really did.</p>
+            <p><span class="character kevin" data-summary-id="Kevin-3" data-character="kevin">Kevin</span> had shoved it
+                far enough down that he didn't have to feel it, a shipping container locked up in an
+                echoing hangar. He sees himself as a young boy of around eight, close-cropped hair, light blue eyes, as
+                he looks in photos from that time, full of energy and conviction, head held so high. That boy who has
+                just discovered that iron weavers prepare the framework around which concrete is poured, every day the
+                same perpendicular reinforcement bars, every day the same grid.</p>
+            <p>And he can't remember the last time that he did this, but he cries. What was then a disappointment is now
+                a tragedy. Because just like his father, <span class="character kevin" data-summary-id="Kevin-3"
+                    data-character="kevin">Kevin</span> is a servant of the blueprint, nothing more, nothing
+                less. Diverging from it was never a real proposition. There was no art in the house, he had no artistic
+                uncle, no art teacher to help him on his way. Had he wanted a different life, he would have had to
+                intervene himself and he never did. <span class="character kevin" data-summary-id="Kevin-3"
+                    data-character="kevin">Kevin</span>'s little boy would be under no illusions about his father's
+                artistic ambition. Nor about his ability to maintain normal relationships. At least <span
+                    class="character kevin" data-summary-id="Kevin-3" data-character="kevin">Kevin</span>'s father had a
+                stable marriage.</p>
+            <p>His mood darkens. He feels trapped in the cabin. Reacts more slowly to the instructions that the headset
+                pumps into his head. Begins to make cock-ups with the rigs.</p>
+            <p>Then he is called to his <span class="character boss" data-summary-id="Boss-3"
+                    data-character="boss">boss</span> again. <span class="character kevin" data-summary-id="Kevin-3"
+                    data-character="kevin">Kevin</span> fears the worst. His unhappiness must be palpable, you must be
+                able to read it in his silhouette, a massive right angle with drooping shoulders. He is no longer the
+                operator he once was, he is going to be fired, <span class="character kevin" data-summary-id="Kevin-3"
+                    data-character="kevin">Kevin</span> is certain of it. Last time, his <span class="character boss"
+                    data-summary-id="Boss-3" data-character="boss">boss</span> gave him the
+                divorce papers, this time he's getting his redundancy letter.</p>
+            <p>But it turns out the opposite is true. His <span class="character boss" data-summary-id="Boss-3"
+                    data-character="boss">boss</span> hands him a folder about the latest model, an enormous
+                beast in bright green, with a revolutionary grabber that the crane operator can attach to most objects
+                from his dashboard. You no longer need a man on the ground to attach the hook. Sure, you need someone to
+                monitor, the manufacturer, Health and Safety and the union agree on that, but in theory it is possible
+                to do without them.</p>
+            <p>'I want you to be the first one to try it,' his <span class="character boss" data-summary-id="Boss-3"
+                    data-character="boss">boss</span> says.</p>
+            <p><span class="character kevin" data-summary-id="Kevin-3" data-character="kevin">Kevin</span> is overcome
+                by professional pride. He cannot resist; the sombreness remains but a grin spreads
+                across his face like a thin layer of tarmac over the top of it.</p>
+            <p>'You in?' asks his <span class="character boss" data-summary-id="Boss-3"
+                    data-character="boss">boss</span>.</p>
+            <p>'You bet your ass,' says <span class="character kevin" data-summary-id="Kevin-3"
+                    data-character="kevin">Kevin</span>.</p>
+            <p>He does the test, the crane is good, they lease it and from that moment on <span class="character kevin"
+                    data-summary-id="Kevin-3" data-character="kevin">Kevin</span> is even higher, he
+                stretches even further, and the new grabber gives him even more control. Every crane sways slightly
+                differently, he enjoys mastering the finer points. <span class="character kevin"
+                    data-summary-id="Kevin-3" data-character="kevin">Kevin</span> is himself again, nothing but
+                concentration,
+                nothing but contentment. The world stays outside the cabin.</p>
+        </section>
+
+        <section>
+            <p>Until one morning, on the way to the construction site, he encounters his old classmate's poster. The
+                opening of her exhibition. He climbs into his crane and, in a rush of controlled aggression, lifts a
+                cement truck. He holds it perfectly level and sets it down gently on the other side of the site. His
+                <span class="character boss" data-summary-id="Boss-4" data-character="boss">boss</span> is furious. The
+                driver was still on his way in, the cement truck was empty, but even so. Everyone
+                is furious. <span class="character kevin" data-summary-id="Kevin-4" data-character="kevin">Kevin</span>
+                says he has just been so tired recently, which isn't true, but he knows how to play
+                the burnout game and his <span class="character boss" data-summary-id="Boss-4"
+                    data-character="boss">boss</span> tells him to go home.
+            </p>
+            <p><span class="character kevin" data-summary-id="Kevin-4" data-character="kevin">Kevin</span> goes and lies
+                on his lonely double bed and realizes that he really isn't well. At first he feels
+                hot, then cold again. Clammy. In his fever dream he goes to her exhibition, feels diminished by her
+                work.</p>
+            <p>The next minute he is sitting in his new crane. Carrying out his tasks. Working the controls, pushing the
+                buttons. He moves the hook in and out along the jib, hoisting it up and letting it drop again. He hears
+                violins, the camera zooms out, the city is one big crane ballet. He turns pirouettes on his mast, the
+                rest copy him. Everything moves in sync. And <span class="character kevin" data-summary-id="Kevin-4"
+                    data-character="kevin">Kevin</span> wants to get out of bed but can't manage it, as if
+                his spirit wants to leave but his body would rather hallucinate. Then he sees what he has made: a mesh
+                of bars, bent, glowing, a woman's body.</p>
+            <p>All at once he is wide awake. Resolved. He takes a cold shower and walks back over to the construction
+                site.</p>
+            <p>He gets into the lift, his rough silhouette zooms up the green mast. If you saw him standing behind his
+                little window, looking out over the city, with the same bright blue eyes as back then, gliding further
+                and further, you would smile just like he did.</p>
+            <p>By the time the city wakes and begins to realize what has changed in the night, he is all finished.
+                Apartments have been lifted onto office buildings, schools set down next to ponds. In a parking lot,
+                vertically stacked suv's form an expensive house of cards. City hall is leaning on the train station,
+                creating an enormous slide. People raise their eyebrows. Children cheer. <span class="character kevin"
+                    data-summary-id="Kevin-4" data-character="kevin">Kevin</span> glows with pride.</p>
+        </section>
+
+    </article>
+    </div>
+    </main>
+
+
+    <div id="popup" class="popup"></div>
+
+    <div id="popup" class="popup"></div>
+
+    <script>
+        const popup = document.getElementById('popup');
+        const characters = document.querySelectorAll('.character');
+
+        characters.forEach(el => {
+            el.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const summaryId = el.dataset.summaryId;
+                const characterType = el.dataset.character;
+                const summaryText = characterSummaries[summaryId] || "Summary not available.";
+                const rect = el.getBoundingClientRect();
+
+                // Apply class and content
+                popup.className = `popup ${characterType} fade-in`;
+                popup.innerHTML = `<p>${summaryText}</p>`;
+
+
+                // Position and show
+                popup.style.top = `${rect.bottom + window.scrollY + 5}px`;
+                popup.style.left = `${rect.left + window.scrollX}px`;
+                popup.style.display = 'flex';
+            });
+        });
+
+        document.addEventListener('click', () => {
+            if (popup.style.display === 'flex') {
+                popup.classList.remove('fade-in');
+                popup.classList.add('fade-out');
+                setTimeout(() => {
+                    popup.style.display = 'none';
+                    popup.classList.remove('fade-out');
+                    popup.innerText = '';
+                }, 300); // matches fadeOut duration
+            }
+        });
+    </script>
+
+    <footer style="margin-top: 80px; text-align: center; font-style: italic; color: #555;">
+        <p>Originally written in Dutch by Niels 't Hooft</p>
+        <p>Translated to English by Jenny Watson</p>
+        <p>&copy; 2019</p>
+    </footer>
+
+
+</body>
+
+</html>
