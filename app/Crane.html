@@ -5,36 +5,52 @@
     <meta charset="UTF-8">
     <title>Crane</title>
     <style>
+        /* General page setup */
         body {
+            max-width: 100vw;
+            overflow-x: hidden;
             background-color: #fdfaf6;
             margin: 0;
             padding: 0;
+            font-family: Georgia, serif;
         }
 
+        /* Layout container */
         main {
             display: flex;
             justify-content: center;
-            padding: 40px 20px;
+            padding: 5vw 3vw;
         }
 
+        /* Book style */
         .book {
             background-color: #ffffff;
-            max-width: 700px;
+            width: 700px;
+            /* Fixed width on desktop */
+            max-width: 90vw;
+            /* Responsive fallback */
             padding: 40px;
             line-height: 1.8;
-            font-family: Georgia, serif;
-            font-size: 18px;
+            font-size: 1.1em;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+            line-height: 1.8;
+            font-size: 1.1em;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
         }
 
+        /* Title */
         h1 {
             text-align: center;
             font-family: 'Georgia', serif;
-            margin-bottom: 40px;
+            margin-bottom: 2rem;
+            font-size: 2em;
         }
 
+        /* Sections and dividers */
         section {
-            margin-bottom: 80px;
+            margin-bottom: 10vh;
             position: relative;
         }
 
@@ -42,10 +58,11 @@
             content: "";
             display: block;
             width: 50%;
-            margin: 60px auto 0;
+            margin: 4rem auto 0;
             border-top: 1px solid #ccc;
         }
 
+        /* Character styling */
         .character {
             cursor: pointer;
             text-decoration: underline;
@@ -72,46 +89,50 @@
             color: #7a52c4;
         }
 
+        /* Popup base */
         .popup {
             display: none;
             position: absolute;
             background: url('/home/fbartolic/Documents/fun/tale-hackathon/app/assets/ink.png') no-repeat center center;
             background-size: contain;
+
             width: 500px;
             height: 280px;
-            padding: 20px;
+            /* Fixed height */
+
+            padding: 30px;
             color: #ffffff;
-            font-size: 14px;
+            font-size: 1em;
             font-family: Georgia, serif;
-            text-align: center;
             z-index: 100;
-            border: none;
-            box-shadow: none;
+            box-sizing: border-box;
 
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-direction: column;
 
             opacity: 0;
             pointer-events: none;
-            line-height: 1.4;
             text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
-            white-space: normal;
             word-break: break-word;
             text-align: center;
-            flex-direction: column;
             overflow: hidden;
+            /* Prevents overflow beyond the fixed box */
         }
 
-
-
+        /* Popup paragraph */
         .popup p {
-            max-width: 60%;
-            margin: 0;
+            max-width: 80%;
+            margin: 0 auto;
             line-height: 1.5;
             text-align: center;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
+
+        /* Animations */
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -133,7 +154,7 @@
         }
 
         .fade-in {
-            animation: fadeIn 1s ease forwards;
+            animation: fadeIn 0.6s ease forwards;
             pointer-events: auto;
         }
 
@@ -142,35 +163,30 @@
             pointer-events: none;
         }
 
-
-        /* .popup.kevin {}
-
-        .popup.boss {
-            border-color: #0d5319;
-            background-color: #1ecc66;
-        }
-
-        .popup.father {
-            border-color: #b5651d;
-            background-color: #fdf4ea;
-        }
-
-        .popup.wife {
-            border-color: #9b3b8e;
-            background-color: #fff1f1;
-        }
-
-        .popup.girlfriend {
-            border-color: #7a52c4;
-            background-color: #f3efff;
-        } */
-
+        /* Footer */
         footer {
             text-align: center;
             font-style: italic;
             color: #555;
             margin-top: 80px;
             padding-bottom: 40px;
+        }
+
+        /* Responsive tweaks */
+        @media (max-width: 600px) {
+            .book {
+                font-size: 1em;
+                padding: 6vw;
+            }
+
+            .popup {
+                padding: 5vw;
+                font-size: 0.95em;
+            }
+
+            h1 {
+                font-size: 1.6em;
+            }
         }
     </style>
 </head>
@@ -209,9 +225,8 @@
 <body>
     <h1>Crane</h1>
     <article>
-
-
-
+        <main>
+            <div class="book">
 
         <section>
             <p>Below it is misty but <span class="character kevin" data-summary-id="Kevin-1"
@@ -431,7 +446,6 @@
     </main>
 
 
-    <div id="popup" class="popup"></div>
 
     <div id="popup" class="popup"></div>
 
@@ -442,20 +456,30 @@
         characters.forEach(el => {
             el.addEventListener('click', (e) => {
                 e.stopPropagation();
+
                 const summaryId = el.dataset.summaryId;
                 const characterType = el.dataset.character;
-                const summaryText = characterSummaries[summaryId] || "Summary not available.";
-                const rect = el.getBoundingClientRect();
+                const summaryText = characterSummaries[summaryId] || "Summar    y not available.";
 
-                // Apply class and content
+                const rect = el.getBoundingClientRect();
+                const popupWidth = 500; // approximate width in px
+                const margin = 16; // desired minimum space to the edge
+
+                // Calculate ideal left position
+                let left = rect.left + window.scrollX;
+
+                // Flip leftward if overflow would occur
+                if (left + popupWidth + margin > window.innerWidth) {
+                    left = window.innerWidth - popupWidth - margin;
+                }
+
+                // Set popup content and show
                 popup.className = `popup ${characterType} fade-in`;
                 popup.innerHTML = `<p>${summaryText}</p>`;
-
-
-                // Position and show
-                popup.style.top = `${rect.bottom + window.scrollY + 5}px`;
-                popup.style.left = `${rect.left + window.scrollX}px`;
+                popup.style.top = `${rect.bottom + window.scrollY}px`; // 8px padding below
+                popup.style.left = `${Math.max(margin, left)}px`; // enforce left margin
                 popup.style.display = 'flex';
+
             });
         });
 
