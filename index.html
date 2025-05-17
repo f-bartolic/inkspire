@@ -105,7 +105,7 @@
 
 
             /* popup width */
-            max-width: 30vw; 
+            max-width: 30vw;
             min-width: 100px;
             display: inline-block;
             white-space: normal;
@@ -113,7 +113,7 @@
             transition: opacity 0.4s ease;
             width: fit-content;
         }
-        
+
         /* this is text inside popup */
         .popup p {
             /* max-width: 60%; */
@@ -202,6 +202,18 @@
 
             h1 {
                 font-size: 1.6em;
+            }
+        }
+
+        @media only screen and (min-device-width: 320px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) {
+
+            body,
+            .book,
+            .popup,
+            .popup p,
+            h1,
+            p {
+                font-size: 3em;
             }
         }
     </style>
@@ -562,44 +574,44 @@
     <script>
         const popup = document.getElementById('popup');
         const characters = document.querySelectorAll('.character');
-    
+
         characters.forEach(el => {
             el.addEventListener('click', (e) => {
                 e.stopPropagation();
-    
+
                 const summaryId = el.dataset.summaryId;
                 const characterType = el.dataset.character;
                 const summaryText = characterSummaries[summaryId] || "Summary not available.";
-    
+
                 popup.className = `popup ${characterType} fade-in`;
                 popup.innerHTML = `<p>${summaryText}</p>`;
                 popup.style.display = 'inline-block';
-    
+
                 const rect = el.getBoundingClientRect();
                 const popupWidth = popup.offsetWidth;
                 const margin = 16;
-    
+
                 let left = rect.left + window.scrollX;
                 let top = rect.bottom + window.scrollY + 8;
-    
+
                 if (left + popupWidth + margin > window.innerWidth) {
                     left = window.innerWidth - popupWidth - margin;
                 }
-    
+
                 if (left < margin) {
                     left = margin;
                 }
-    
+
                 popup.style.left = `${left}px`;
                 popup.style.top = `${top}px`;
             });
         });
-    
+
         document.addEventListener('click', () => {
             if (popup.style.display === 'inline-block') {
                 popup.classList.remove('fade-in');
                 popup.classList.add('fade-out');
-    
+
                 setTimeout(() => {
                     popup.style.display = 'none';
                     popup.classList.remove('fade-out');
@@ -608,7 +620,7 @@
             }
         });
     </script>
-    
+
 
     <footer style="margin-top: 80px; text-align: center; font-style: italic; color: #555;">
         <p>Originally written in Dutch by Niels 't Hooft</p>
