@@ -553,41 +553,53 @@
     <script>
         const popup = document.getElementById('popup');
         const characters = document.querySelectorAll('.character');
-
+    
         characters.forEach(el => {
             el.addEventListener('click', (e) => {
                 e.stopPropagation();
-
+    
                 const summaryId = el.dataset.summaryId;
                 const characterType = el.dataset.character;
                 const summaryText = characterSummaries[summaryId] || "Summary not available.";
-
+    
                 popup.className = `popup ${characterType} fade-in`;
                 popup.innerHTML = `<p>${summaryText}</p>`;
                 popup.style.display = 'inline-block';
-
+    
                 const rect = el.getBoundingClientRect();
                 const popupWidth = popup.offsetWidth;
                 const margin = 16;
-
+    
                 let left = rect.left + window.scrollX;
                 let top = rect.bottom + window.scrollY + 8;
-
-                // Adjust if popup would overflow to the right
+    
                 if (left + popupWidth + margin > window.innerWidth) {
                     left = window.innerWidth - popupWidth - margin;
                 }
-
-                // Minimum left edge protection
+    
                 if (left < margin) {
                     left = margin;
                 }
-
+    
                 popup.style.left = `${left}px`;
                 popup.style.top = `${top}px`;
             });
         });
+    
+        document.addEventListener('click', () => {
+            if (popup.style.display === 'inline-block') {
+                popup.classList.remove('fade-in');
+                popup.classList.add('fade-out');
+    
+                setTimeout(() => {
+                    popup.style.display = 'none';
+                    popup.classList.remove('fade-out');
+                    popup.innerHTML = '';
+                }, 300); // must match your CSS fade-out duration
+            }
+        });
     </script>
+    
 
     <footer style="margin-top: 80px; text-align: center; font-style: italic; color: #555;">
         <p>Originally written in Dutch by Niels 't Hooft</p>
