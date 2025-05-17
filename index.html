@@ -59,6 +59,8 @@
             cursor: pointer;
             text-decoration: underline;
             position: relative;
+            padding: 2px 4px;
+            /* easier touch targets */
         }
 
         .character.kevin {
@@ -85,8 +87,8 @@
             display: none;
             position: absolute;
             background: url('ink.png') no-repeat center center;
-            background-size: contain;
-            padding: 100px 100px;
+            background-size: 100% 100%;
+            padding: 100px;
             color: #ffffff;
             font-size: 1.5em;
             font-family: Georgia, serif;
@@ -98,12 +100,11 @@
             text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.8);
             word-break: break-word;
 
-            max-width: 1000px;
-            background-repeat: no-repeat;
-            background-size: 100% 100%;
-
+            max-width: 90vw;
+            min-width: 240px;
             display: inline-block;
             white-space: normal;
+            overflow-wrap: break-word;
         }
 
         .popup p {
@@ -158,16 +159,20 @@
             .book {
                 font-size: 1em;
                 padding: 6vw;
+                width: 100%;
             }
 
             .popup {
-                padding: 5vw;
-                font-size: 0.95em;
+                padding: 16vw 8vw;
+                font-size: 1em;
+                max-width: 92vw;
+                background-size: 100% 100%;
             }
 
             h1 {
                 font-size: 1.6em;
             }
+        }
         }
     </style>
 </head>
