@@ -10,11 +10,15 @@
         body {
             max-width: 100vw;
             overflow-x: hidden;
-            background-color: #ebc492;
+            background-color: #d1b28a;
             margin: 0;
             padding: 0;
             font-family: Georgia, serif;
-            /* font-family: 'Unna', serif; */
+        }
+
+        #content-wrapper.blurred {
+            filter: blur(5px);
+            transition: filter 0.3s ease;
         }
 
         main {
@@ -24,15 +28,12 @@
         }
 
         .book {
-            background-color: #f7bd72;
-            width: 900px;
+            background-color: #d4b58d;
+            width: 1000px;
             max-width: 90vw;
-            padding: 20px;
+            padding: 50px;
             line-height: 1.8;
             font-size: 2em;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-            box-sizing: border-box;
-            line-height: 1.8;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
             box-sizing: border-box;
         }
@@ -40,7 +41,6 @@
         h1 {
             text-align: center;
             font-family: 'Georgia', serif;
-            /* font-family: 'Unna', serif; */
             margin-bottom: 1rem;
             font-size: 4em;
         }
@@ -63,9 +63,11 @@
         section::after {
             content: "";
             display: block;
-            width: 50%;
+            width: 80%;
             margin: 4rem auto 0;
-            border-top: 1px solid #ccc;
+            border-top: 3px solid rgb(51, 51, 51);
+            /* Thicker and darker line */
+            opacity: 0.6;
         }
 
         .character {
@@ -73,11 +75,10 @@
             text-decoration: underline;
             position: relative;
             padding: 2px 4px;
-            /* easier touch targets */
         }
 
         .character.kevin {
-            color: #2b7de9;
+            color: #1262cc;
         }
 
         .character.boss {
@@ -85,14 +86,18 @@
         }
 
         .character.father {
-            color: #b5651d;
+            color: #151774;
         }
 
         .character.wife {
-            color: #c94c4c;
+            color: #d84d4d;
         }
 
         .character.girlfriend {
+            color: #db58b4;
+        }
+
+        .character.son {
             color: #7a52c4;
         }
 
@@ -103,7 +108,6 @@
             color: #ffffff;
             font-size: 1.3em;
             font-family: Georgia, serif;
-            /* font-family: 'Unna', serif; */
             z-index: 100;
             box-sizing: border-box;
 
@@ -112,9 +116,6 @@
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
             word-break: break-word;
-
-
-            /* popup width */
             max-width: 30vw;
             min-width: 100px;
             display: inline-block;
@@ -124,20 +125,17 @@
             width: fit-content;
         }
 
-        /* this is text inside popup */
         .popup p {
-            /* max-width: 60%; */
             margin: 0;
             padding: 0;
             text-align: left;
             line-height: 1.6;
             font-size: 1.3em;
-            /* font-family: 'Unna', serif; */
             font-family: Georgia, serif;
         }
 
         .popup.kevin {
-            background-color: #2b7de9;
+            background-color: #1262cc;
         }
 
         .popup.boss {
@@ -145,17 +143,20 @@
         }
 
         .popup.father {
-            background-color: #b5651d;
+            background-color: #151774;
         }
 
         .popup.wife {
-            background-color: #c94c4c;
+            background-color: #d84d4d;
         }
 
         .popup.girlfriend {
-            background-color: #7a52c4;
+            background-color: #db58b4;
         }
 
+        .popup.son {
+            background-color: #7a52c4;
+        }
 
         @keyframes fadeIn {
             from {
@@ -209,9 +210,6 @@
                 background-size: cover;
             }
 
-
-
-
             h1 {
                 font-size: 1.6em;
             }
@@ -241,14 +239,16 @@
     </style>
 </head>
 
+
 <script>
     const characterSummaries = {
         "Kevin-1": "Kevin is a focused, confident crane operator who finds peace and purpose high above the city. He thrives in solitude and takes pride in being the best at what he does.",
-        "Boss-1": "Kevin's boss is a serious, practical site manager who values Kevin's skills but rarely shows emotion. Though unsettled by delivering legal papers, he briefly reveals empathy beneath his formality.",
+        "Boss-1": "Kevin's boss is a serious, practical site manager who values Kevin's skills but rarely shows emotion. Unsettled by delivering legal papers, he briefly reveals empathy beneath his formality.",
         "Father-1": "Kevin once saw his father as an artistic 'iron weaver,' but later realized he was a routine laborer. This mirrors Kevin's own crisis—he followed the same path and now sees the emotional and creative cost.",
         "Wife-1": "Kevin's wife is mentioned only in a legal envelope that visibly unsettles him. Her name appears in official documents, hinting at serious personal developments but leaving the details unclear.",
 
         "Wife-2": "Kevin's estranged wife has left with their child. Though not present, her absence reveals the emotional distance in their marriage and her choice to pursue a different life.",
+        "Son-2": "Kevin's son visits on weekends. They rarely speak, but their quiet time brings Kevin comfort and highlights his emotional distance and loss.",
 
 
         "Girlfriend-2": "Kevin's first love is now a confident, articulate visual artist. She reconnects with him warmly, but her success and emotional openness stir jealousy and unresolved feelings in Kevin.",
@@ -273,9 +273,9 @@
 
 
 <body>
-    <h1>Crane</h1>
-    <h2 class="author-subtitle">by Niels 't Hooft</h2>
-    <article>
+    <div id="content-wrapper">
+        <h1>Crane</h1>
+        <h2 class="author-subtitle">by Niels 't Hooft</h2>
         <main>
             <div class="book">
 
@@ -405,7 +405,9 @@
                         the things that spouses do: sitting together on the sofa, or in the sun, days out, chatting,
                         watching
                         TV. He would have preferred just to look at her.</p>
-                    <p>On the weekends his son comes over. They don't talk but they are together. He values those
+                    <p>On the weekends his <span class="character son" data-summary-id="Son-2"
+                            data-character="son">son</span> comes over. They don't talk but they are together. He values
+                        those
                         moments. But
                         his discomfort only passes on Monday morning, when he takes his place in the cabin, takes off
                         his
@@ -449,21 +451,27 @@
                         him, he
                         notices the composition, the seagull on a third of the triangle that forms the jib, stretching
                         towards
-                        the horizon. He can't help but be reminded of his father. The iron weaver.</p>
+                        the horizon. He can't help but be reminded of his <span class="character father"
+                            data-summary-id="Father-1" data-character="father">father</span>. The iron weaver.</p>
                     <p><span class="character kevin" data-summary-id="Kevin-3" data-character="kevin">Kevin</span>'s
                         head is
                         usually empty when he works, he feels the slight sway of the crane in the wind and thinks
                         of nothing, not even the past. But now he remembers what he thought an iron weaver was when he
                         was a
-                        little boy. In his imagination he had seen his father bending iron bars, making them into the
+                        little boy. In his imagination he had seen his <span class="character father"
+                            data-summary-id="Father-1" data-character="father">father</span> bending iron bars, making
+                        them into the
                         shapes of
                         animals, people, abstract figures. He wove everything he could conceive of as if it was nothing.
                         When
-                        his father watched soccer, <span class="character kevin" data-summary-id="Kevin-3"
-                            data-character="kevin">Kevin</span> saw an artist recovering from his creation. Until one
+                        his <span class="character father" data-summary-id="Father-1"
+                            data-character="father">father</span> watched soccer, <span class="character kevin"
+                            data-summary-id="Kevin-3" data-character="kevin">Kevin</span> saw an artist recovering from
+                        his creation. Until one
                         day his
-                        father
-                        took him along to the construction site and he discovered what he really did.</p>
+                        <span class="character father" data-summary-id="Father-1" data-character="father">father</span>
+                        took him along to the construction site and he discovered what he really did.
+                    </p>
                     <p><span class="character kevin" data-summary-id="Kevin-3" data-character="kevin">Kevin</span> had
                         shoved it
                         far enough down that he didn't have to feel it, a shipping container locked up in an
@@ -476,19 +484,24 @@
                         same perpendicular reinforcement bars, every day the same grid.</p>
                     <p>And he can't remember the last time that he did this, but he cries. What was then a
                         disappointment is now
-                        a tragedy. Because just like his father, <span class="character kevin" data-summary-id="Kevin-3"
-                            data-character="kevin">Kevin</span> is a servant of the blueprint, nothing more, nothing
+                        a tragedy. Because just like his <span class="character father" data-summary-id="Father-1"
+                            data-character="father">father</span>, <span class="character kevin"
+                            data-summary-id="Kevin-3" data-character="kevin">Kevin</span> is a servant of the blueprint,
+                        nothing more, nothing
                         less. Diverging from it was never a real proposition. There was no art in the house, he had no
                         artistic
                         uncle, no art teacher to help him on his way. Had he wanted a different life, he would have had
                         to
                         intervene himself and he never did. <span class="character kevin" data-summary-id="Kevin-3"
                             data-character="kevin">Kevin</span>'s little boy would be under no illusions about his
-                        father's
+                        <span class="character father" data-summary-id="Father-1"
+                            data-character="father">father</span>'s
                         artistic ambition. Nor about his ability to maintain normal relationships. At least <span
                             class="character kevin" data-summary-id="Kevin-3" data-character="kevin">Kevin</span>'s
-                        father had a
-                        stable marriage.</p>
+                        <span class="character father" data-summary-id="Father-1" data-character="father">father</span>
+                        had a
+                        stable marriage.
+                    </p>
                     <p>His mood darkens. He feels trapped in the cabin. Reacts more slowly to the instructions that the
                         headset
                         pumps into his head. Begins to make cock-ups with the rigs.</p>
@@ -586,9 +599,12 @@
                         with pride.</p>
                 </section>
 
-    </article>
+                </article>
+            </div>
+        </main>
     </div>
-    </main>
+
+
 
 
 
@@ -597,6 +613,7 @@
     <script>
         const popup = document.getElementById('popup');
         const characters = document.querySelectorAll('.character');
+        const contentWrapper = document.getElementById('content-wrapper');
 
         characters.forEach(el => {
             el.addEventListener('click', (e) => {
@@ -627,6 +644,9 @@
 
                 popup.style.left = `${left}px`;
                 popup.style.top = `${top}px`;
+
+                // Blur background
+                contentWrapper.classList.add('blurred');
             });
         });
 
@@ -639,19 +659,18 @@
                     popup.style.display = 'none';
                     popup.classList.remove('fade-out');
                     popup.innerHTML = '';
-                }, 300); // must match your CSS fade-out duration
+                    // Remove blur
+                    contentWrapper.classList.remove('blurred');
+                }, 300);
             }
         });
     </script>
 
-
-    <footer style="margin-top: 80px; text-align: center; font-style: italic; color: #555;">
+    <footer>
         <p>Originally written in Dutch by Niels 't Hooft</p>
         <p>Translated to English by Jenny Watson</p>
         <p>&copy; 2019</p>
     </footer>
-
-
 </body>
 
 </html>
